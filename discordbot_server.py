@@ -1,7 +1,14 @@
+#外部モジュールのimport
 import discord
 
-#botのトークン
-TOKEN = 'MTIwMzkwNTA3ODU0NTYxMjkyMQ.GbQjAy.zu9bsQQ-BNVaWhlzNz6UtxQDOYVw7gIhBORF4U'
+#自作モジュールのimport
+import constant
+
+#定数の定義
+class const(constant.Constant):
+
+    #botのトークン
+    TOKEN: str = 'MTIwMzkwNTA3ODU0NTYxMjkyMQ.GbQjAy.zu9bsQQ-BNVaWhlzNz6UtxQDOYVw7gIhBORF4U'
 
 #インテント定義
 #このボットではすべてを有効にする
@@ -28,4 +35,4 @@ async def on_message(message):
     if message.content == '/test':
         await message.channel.send('OK')
 
-client.run(TOKEN)
+client.run(const.TOKEN)
