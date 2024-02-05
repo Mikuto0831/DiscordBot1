@@ -5,8 +5,7 @@ TOKEN = 'MTIwMzkwNTA3ODU0NTYxMjkyMQ.GbQjAy.zu9bsQQ-BNVaWhlzNz6UtxQDOYVw7gIhBORF4
 
 #インテント定義
 #このボットではすべてを有効にする
-intents = discord.Intents()
-intents.all()
+intents = discord.Intents().all()
 
 #接続用オブジェクト
 client = discord.Client(intents=intents)
@@ -20,11 +19,13 @@ async def on_ready():
 #メッセージ受信時の動作
 @client.event
 async def on_message(message):
+    #メッセージ受け取り確認
+    #print(message)
     #　送信元がBotだった場合拒否
     if message.author.bot:
         return
     # 「/test」に対して「OK」を送信
-    if message.content == '/neko':
+    if message.content == '/test':
         await message.channel.send('OK')
 
 client.run(TOKEN)
