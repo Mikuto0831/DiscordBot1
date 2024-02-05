@@ -1,9 +1,10 @@
 # 外部モジュールのimport
 import discord      # discordBotで一番必要
-from logging import INFO, Logger
-import logging
+from logging import INFO, Logger    # logの出力のために使用
+import logging                      # 上記と同様　だが、名前空間を圧迫する可能性があるため要検討
 from dotenv import load_dotenv # .envファイルを読み取るために導入
 import os           # OS操作用
+import re           # 文字列置換等に使用
 
 # 自作モジュールのimport
 import constant     # 定数を定義できるクラスがある
@@ -50,5 +51,12 @@ async def on_message(message):
     # 「/test」に対して「OK」を送信
     if message.content == '/test':
         await message.channel.send('OK')
+    
+    # 先頭の文字がtwitter系リンクならvxtwitter.comに変更し、内容を表示されるようにする。
+    if re.search(r'https://x.com/|https://twitter.com/', message.content):
+        # 文章加工
+        await message.channel.send(re.sub(r'x.com|twitter.com', "vxtwitter.com", message.content))
+
+    
 
 client.run(const.TOKEN)
