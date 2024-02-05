@@ -1,5 +1,6 @@
 #外部モジュールのimport
 import discord
+#import logging
 
 #自作モジュールのimport
 import constant
@@ -21,7 +22,8 @@ client = discord.Client(intents=intents)
 @client.event
 async def on_ready():
     #ターミナルへ起動報告
-    print("[INFO]\t起動しました")
+    #logging.info("起動しました")
+    pass
 
 #メッセージ受信時の動作
 @client.event
