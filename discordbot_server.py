@@ -1,15 +1,26 @@
+<<<<<<< HEAD
 #外部モジュールのimport
 import discord
 #import logging
+=======
+# 外部モジュールのimport
+import discord      # discordBotで一番必要
+from dotenv import load_dotenv # .envファイルを読み取るために導入
+import os           # OS操作用
+>>>>>>> master
 
-#自作モジュールのimport
-import constant
+# 自作モジュールのimport
+import constant     # 定数を定義できるクラスがある
+
+
+# .envファイルの呼び出し
+load_dotenv()
 
 #定数の定義
 class const(constant.Constant):
 
     #botのトークン
-    TOKEN: str = 'MTIwMzkwNTA3ODU0NTYxMjkyMQ.GbQjAy.zu9bsQQ-BNVaWhlzNz6UtxQDOYVw7gIhBORF4U'
+    TOKEN: str = os.getenv('TOKEN')
 
 #インテント定義
 #このボットではすべてを有効にする
