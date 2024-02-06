@@ -53,10 +53,26 @@ async def on_message(message):
         await message.channel.send('OK')
     
     # 先頭の文字がtwitter系リンクならvxtwitter.comに変更し、内容を表示されるようにする。
+    # 今はTwitterのURLが入っているだけでほかのリンクも再送信してしまう。
     if re.search(r'https://x.com/|https://twitter.com/', message.content):
         # 文章加工
-        await message.channel.send(re.sub(r'x.com|twitter.com', "vxtwitter.com", message.content))
-
+        #まずURL部分だけ抜き取る
+        pattern = "https?://[\w/:%#\$&\?\(\)~\.=\+\-]+"
+        url_list = re.findall(pattern,message.content)
+        #urlの数だけ送信
+        for url_text in url_list:
+            user_nickname = message.author.display_name      # message.authorはunion[Member, abc.User] 詳細はhttps://discordpy.readthedocs.io/ja/latest/api.html#discord.Message.author
+                                                            # discord.abc.User.display_nameはユーザの表示名を返す
+            await message.channel.send(f"[{user_nickname}がツイートを共有しました]({re.sub(r'x.com|twitter.com', 'vxtwitter.com', url_text)})") # メッセージを　["ユーザ名"が共有しました](URL) に変換する
+            # api.vxtwitter.comっていうAPIがあることが判明　後々書き換える
+            # 参考　https://github.com/dylanpdx/BetterTwitFix
+            # vxurl = re.sub(r'x.com|twitter.com', "vxtwitter.com", url_text)
+            # embed = discord.Embed(title="Twitter(X)URL",url=vxurl,color=0x7FFFD4)
+            # embed.set_thumbnail(url=vxurl)
+            # await message.channel.send(embed=embed)
+        # もし投稿内容がリンクだけだったら元のメッセージを削除
+        if message.content.strip(r" |　|\n") == "".join(url_list):
+            await message.delete()
     
 
 client.run(const.TOKEN)
