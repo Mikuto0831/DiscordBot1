@@ -61,9 +61,9 @@ async def on_message(message):
         url_list = re.findall(pattern,message.content)
         #urlの数だけ送信
         for url_text in url_list:
-            user_nickname = message.author.display_name      # message.authorはunion[Member, abc.User] 詳細はhttps://discordpy.readthedocs.io/ja/latest/api.html#discord.Message.author
+            user_nickname = message.author.display_name     # message.authorはunion[Member, abc.User] 詳細はhttps://discordpy.readthedocs.io/ja/latest/api.html#discord.Message.author
                                                             # discord.abc.User.display_nameはユーザの表示名を返す
-            await message.channel.send(f"[{user_nickname}がツイートを共有しました]({re.sub(r'x.com|twitter.com', 'vxtwitter.com', url_text)})") # メッセージを　["ユーザ名"が共有しました](URL) に変換する
+            await message.channel.send(f"## [{user_nickname}がツイートを共有しました]({re.sub(r'x.com|twitter.com', 'vxtwitter.com', url_text)})") # メッセージを　["ユーザ名"が共有しました](URL) に変換する
             # api.vxtwitter.comっていうAPIがあることが判明　後々書き換える
             # 参考　https://github.com/dylanpdx/BetterTwitFix
             # vxurl = re.sub(r'x.com|twitter.com', "vxtwitter.com", url_text)
