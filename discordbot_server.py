@@ -5,7 +5,8 @@ import logging                      # 上記と同様　だが、名前空間を
 from dotenv import load_dotenv # .envファイルを読み取るために導入
 import os           # OS操作用
 import re           # 文字列置換等に使用
-import random       # ダイスをはじめとして多くのもので使う。
+#import random      # ダイスをはじめとして多くのもので使う。(筈であった)
+import numpy as np  # いろいろと配列処理するならこっちの方が速そう
 
 # 自作モジュールのimport
 import constant     # 定数を定義できるクラスがある
@@ -82,19 +83,26 @@ async def on_message(message):
     
     # ====================================================================================================
     # ダイスボット機能
-    # とりあえず入れるはndm機能(例 1d100:100面ダイスを一回振る)
+    # とりあえず入れるはNdM機能(例 1d100:100面ダイスを一回振る)
     # ----------------------------------------------------------------------------------------------------
     if dice_kinds := re.findall(r'^\d*d\d+\s*', message.content):
-        dice_n,dice_m = list(map(int,dice_kinds[0].split('d')))
+        # d100にも対応した書き方になっている。
+        dice_n,dice_m = list(map(int,[1, dice_cash[1]] if (dice_cash := dice_kinds[0].split('d'))[0] == '' else dice_cash)) # dice_n ダイスの数, dice_m ダイスの最大値
+        # dice_n,dice_m = dice_kinds[0].split('d')
         # ndm機能でのnとmの最大値設定
-        if dice_n > 500:
-            dice_n = 500
-        if dice_m > 999999999:
-            dice_m = 999999999
-        
-        rolls = [ random.randint(1,int(dice_m)) for i in range(int(dice_n))]
+        # if dice_n > 500:
+        #     dice_n = 500            # ダイス数の上限設定
+        # if dice_m > 999999999:
+        #     dice_m = 999999999      # ダイス最大値の上限設定
+        # 動作場所変更　np.random.randint()呼び出し時に同時に行うことで代入をスキップする
+
+        # numpyで一気にランダムなリストを作成する
+        rolls = np.random.randint(1,1000000000 if dice_m > 999999999 else dice_m+1, 500 if dice_n > 500 else dice_n)  #第1引数<=n <第2引数 値の数
+        # 不具合があるならば以下のコードに変更
+        # rolls = [ random.randint(1,int(dice_m)) for i in range(int(dice_n))]
+
         await message.channel.send(rolls)
-        
+
         return
 
 client.run(const.TOKEN)
