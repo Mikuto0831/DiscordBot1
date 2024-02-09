@@ -85,10 +85,16 @@ async def on_message(message):
     # とりあえず入れるはndm機能(例 1d100:100面ダイスを一回振る)
     # ----------------------------------------------------------------------------------------------------
     if dice_kinds := re.findall(r'^\d*d\d+\s*', message.content):
-        d_number = dice_kinds[0].split('d')
-        rolls = [ random.randint(1,int(d_number[1])) for i in range(int(d_number[0]))]
+        dice_n,dice_m = list(map(int,dice_kinds[0].split('d')))
+        # ndm機能でのnとmの最大値設定
+        if dice_n > 500:
+            dice_n = 500
+        if dice_m > 999999999:
+            dice_m = 999999999
+        
+        rolls = [ random.randint(1,int(dice_m)) for i in range(int(dice_n))]
         await message.channel.send(rolls)
-
+        
         return
 
 client.run(const.TOKEN)
