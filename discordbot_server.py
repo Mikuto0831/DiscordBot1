@@ -5,6 +5,7 @@ import logging                      # 上記と同様　だが、名前空間を
 from dotenv import load_dotenv # .envファイルを読み取るために導入
 import os           # OS操作用
 import re           # 文字列置換等に使用
+import random       # ダイスをはじめとして多くのもので使う。
 
 # 自作モジュールのimport
 import constant     # 定数を定義できるクラスがある
@@ -51,9 +52,12 @@ async def on_message(message):
     # 「/test」に対して「OK」を送信
     if message.content == '/test':
         await message.channel.send('OK')
+        return
     
+    # ====================================================================================================
     # 先頭の文字がtwitter系リンクならvxtwitter.comに変更し、内容を表示されるようにする。
     # 今はTwitterのURLが入っているだけでほかのリンクも再送信してしまう。
+    # ----------------------------------------------------------------------------------------------------
     if re.search(r'https://x.com/|https://twitter.com/', message.content):
         # 文章加工
         #まずURL部分だけ抜き取る
@@ -73,6 +77,18 @@ async def on_message(message):
         # もし投稿内容がリンクだけだったら元のメッセージを削除
         if message.content.strip(r" |　|\n") == "".join(url_list):
             await message.delete()
+        return
+    # ====================================================================================================
     
+    # ====================================================================================================
+    # ダイスボット機能
+    # とりあえず入れるはndm機能(例 1d100:100面ダイスを一回振る)
+    # ----------------------------------------------------------------------------------------------------
+    if dice_kinds := re.findall(r'^\d*d\d+\s*', message.content):
+        d_number = dice_kinds[0].split('d')
+        rolls = [ random.randint(1,int(d_number[1])) for i in range(int(d_number[0]))]
+        await message.channel.send(rolls)
+
+        return
 
 client.run(const.TOKEN)
