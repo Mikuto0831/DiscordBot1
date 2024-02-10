@@ -107,7 +107,7 @@ async def on_message(message):
         # 成功値があるなら抜き出す 可読性が悪くなっているが、re.findallの戻り値は基本list型であるため外に[0]をつけて一つだけ呼んでいる
         achieve_val = None if len(dice_kinds) == 1 else achval_cash if (achval_cash := int(re.findall(r'^\d+\s*', dice_kinds[1])[0])) else None
 
-        await message.channel.send(f"{dice_kinds[0]}＞ {(dice_sum_cash := np.sum(rolls))}{'' if dice_n == 1 and dice_m == 100 else rolls if len(rolls) < 30 else '[ダイス詳細中略]'}＞ {dice_sum_cash}{'＞ 致命的失敗/ファンブル' if dice_n == 1 and dice_sum_cash > 95 else '＞ 決定的成功/クリティカル' if dice_sum_cash < 6 else '' if not((achieve_val)) else f'＞ 成功({dice_sum_cash}<={achieve_val})' if dice_sum_cash <= achieve_val else f'＞ 失敗({dice_sum_cash}>{achieve_val})'}")
+        await message.channel.send(f"{dice_kinds[0]}＞ {(dice_sum_cash := np.sum(rolls))}{'' if dice_n == 1 else rolls if len(rolls) < 30 else '[ダイス詳細中略]'}＞ {dice_sum_cash}{'' if dice_n != 1 or dice_m != 100 else '＞ 致命的失敗/ファンブル' if dice_sum_cash > 95 else '＞ 決定的成功/クリティカル' if dice_sum_cash < 6 else '' if not((achieve_val)) else f'＞ 成功({dice_sum_cash}<={achieve_val})' if dice_sum_cash <= achieve_val else f'＞ 失敗({dice_sum_cash}>{achieve_val})'}")
         # 正直言うとここまで後ろのif文つながるならいつもと大差ないかも？
 
         return
