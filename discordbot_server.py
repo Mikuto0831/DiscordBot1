@@ -88,7 +88,8 @@ async def on_message(message):
     # とりあえず入れるはNdM機能(例 1d100:100面ダイスを1回振る)
     # ----------------------------------------------------------------------------------------------------
     if dice_kinds := re.findall(r'^\d*d\d+\s*|\s*\d+$|\s*\d+\s+', message.content):
-        if "d" in dice_kinds[0]:
+        print(dice_kinds)
+        if not("d" in dice_kinds[0]):
             return                  # 数字だけの時はダイスではない
         
         # d100にも対応した書き方になっている。
