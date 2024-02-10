@@ -88,9 +88,12 @@ async def on_message(message):
     # とりあえず入れるはNdM機能(例 1d100:100面ダイスを1回振る)
     # ----------------------------------------------------------------------------------------------------
     if dice_kinds := re.findall(r'^\d*d\d+\s*|\s*\d+\s*', message.content):
-        print(dice_kinds)
         # d100にも対応した書き方になっている。
-        dice_n,dice_m= list(map(int,[1, dice_cash[1]] if (dice_cash := dice_kinds[0].split('d'))[0] == '' else dice_cash)) # dice_n ダイスの数, dice_m ダイスの最大値
+        try :
+            dice_n,dice_m= list(map(int,[1, dice_cash[1]] if (dice_cash := dice_kinds[0].split('d'))[0] == '' else dice_cash)) # dice_n ダイスの数, dice_m ダイスの最大値
+        except ValueError:
+            await message.channel.send("エラーが検知されました！ダイスの値が正しく入力されていないようです！")
+            return
         # dice_n,dice_m = dice_kinds[0].split('d')
         # ndm機能でのnとmの最大値設定
         # if dice_n > 500:
@@ -109,7 +112,9 @@ async def on_message(message):
 
         await message.channel.send(f"{dice_kinds[0]}＞ {(dice_sum_cash := np.sum(rolls))}{'' if dice_n == 1 else rolls if len(rolls) < 30 else '[ダイス詳細中略]'}＞ {dice_sum_cash}{'' if dice_n != 1 or dice_m != 100 else '＞ 致命的失敗/ファンブル' if dice_sum_cash > 95 else '＞ 決定的成功/クリティカル' if dice_sum_cash < 6 else '' if not((achieve_val)) else f'＞ 成功({dice_sum_cash}<={achieve_val})' if dice_sum_cash <= achieve_val else f'＞ 失敗({dice_sum_cash}>{achieve_val})'}")
         # 正直言うとここまで後ろのif文つながるならいつもと大差ないかも？
-
         return
+
+
+
 
 client.run(const.TOKEN)
