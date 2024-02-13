@@ -5,7 +5,7 @@ import logging                      # 上記と同様　だが、名前空間を
 from dotenv import load_dotenv # .envファイルを読み取るために導入
 import os           # OS操作用
 import re           # 文字列置換等に使用
-#import random      # ダイスをはじめとして多くのもので使う。(筈であった)
+import random       # ダイスをはじめとして多くのもので使う。(筈であった)
 import numpy as np  # いろいろと配列処理するならこっちの方が速そう
 
 # 自作モジュールのimport
@@ -85,10 +85,19 @@ async def on_message(message):
     # ====================================================================================================
     # ダイスボット機能
     # ----------------------------------------------------------------------------------------------------
+    # CCBを振る 引数も簡単であるため非常に高速な処理ができると考えられる
+    # CCB<=が基本だがCCB\d+も可能で
+    # ----------------------------------------------------------------------------------------------------
+    if ccb := re.findall(r'(?i)ccb<=\d+|ccb\d+|ししび\d+|しーしーびー\d+',message.content)[0]:
+        print(ccb)
+        ccb_achieve_val = int(re.findall(r'\d+',ccb)[0])
+        await message.channel.send(f"{message.content}(1d100<={ccb_achieve_val})＞ {(dice_val_cash := random.randint(1,100))}＞ {'致命的失敗/ファンブル' if dice_val_cash > 95 else '決定的成功/クリティカル' if dice_val_cash < 6 else '成功' if dice_val_cash <= ccb_achieve_val else '失敗'}")
+        return
+    
+    # ----------------------------------------------------------------------------------------------------
     # とりあえず入れるはNdM機能(例 1d100:100面ダイスを1回振る)
     # ----------------------------------------------------------------------------------------------------
     if dice_kinds := re.findall(r'^\d*d\d+\s*|\s*\d+$|\s*\d+\s+', message.content):
-        print(dice_kinds)
         if not("d" in dice_kinds[0]):
             return                  # 数字だけの時はダイスではない
         
@@ -117,8 +126,7 @@ async def on_message(message):
         await message.channel.send(f"{dice_kinds[0]}＞ {(dice_sum_cash := np.sum(rolls))}{'' if dice_n == 1 else rolls if len(rolls) < 30 else '[ダイス詳細中略]'}＞ {dice_sum_cash}{'' if dice_n != 1 or dice_m != 100 else '＞ 致命的失敗/ファンブル' if dice_sum_cash > 95 else '＞ 決定的成功/クリティカル' if dice_sum_cash < 6 else '' if not((achieve_val)) else f'＞ 成功({dice_sum_cash}<={achieve_val})' if dice_sum_cash <= achieve_val else f'＞ 失敗({dice_sum_cash}>{achieve_val})'}")
         # 正直言うとここまで後ろのif文つながるならいつもと大差ないかも？
         return
-
-
+    
 
 
 client.run(const.TOKEN)
