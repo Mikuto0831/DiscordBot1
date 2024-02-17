@@ -134,6 +134,12 @@ async def on_message(message):
         # 正直言うとここまで後ろのif文つながるならいつもと大差ないかも？
         return
     
+    # aidコマンド(支援先表示)
+    if message.content == '--aid':
+        await message.channel.send('支援はリンク先から！！\nhttps://mikuto0831.fanbox.cc/')
+        return
+
+
     # helpコマンド
     if message.content == '--help':
         await message.channel.send('各機能の利用方法についてはこちらを参照ください\nhttps://github.com/Mikuto0831/DiscordBot1/wiki/%E6%A9%9F%E8%83%BD%E4%B8%80%E8%A6%A7')
