@@ -15,7 +15,7 @@ jobs:
           host: ${{ secrets.SSH_HOST }} # ホスト名
           username: ${{ secrets.SSH_USERNAME }} # SSH ユーザ名
           key: ${{ secrets.SSH_PRIVATE_KEY }} # 秘密鍵の内容
-          pass: ${{ secrets.SSH_PASSPHRASE }} # 秘密鍵のパスフレーズ
+          passphrase: ${{ secrets.SSH_PASSPHRASE }} # 秘密鍵のパスフレーズ
           port: ${{ secrets.SSH_PORT }} # ポート番号
           script: |
             cd /opt/disbot1
