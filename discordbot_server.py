@@ -136,7 +136,7 @@ async def on_message(message):
     
     # aidコマンド(支援先表示)
     if message.content == '--aid':
-        await message.channel.send('支援はリンク先から！！\nhttps://mikuto0831.fanbox.cc/')
+        await message.channel.send('支援はリンク先から！！!\nhttps://mikuto0831.fanbox.cc/')
         return
 
 
