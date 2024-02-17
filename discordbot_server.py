@@ -7,6 +7,7 @@ import os           # OS操作用
 import re           # 文字列置換等に使用
 import random       # ダイスをはじめとして多くのもので使う。(筈であった)
 import numpy as np  # いろいろと配列処理するならこっちの方が速そう
+import asyncio      # 非同期のスリープ用
 
 # 自作モジュールのimport
 import constant     # 定数を定義できるクラスがある
@@ -41,6 +42,16 @@ client = discord.Client(intents=intents)
 async def on_ready():
     #ターミナルへ起動報告
     logger.info("起動しました")
+    # ステータスメッセージを表示する。
+    time_count_status = 0
+    status_message = f" / 機能説明はこちら→--help / 参加サーバー数:{len(client.guilds)} / 支援はこちら→--aid"
+    while True:
+        await client.change_presence(activity = discord.Activity(name=(status_message := status_message[3:] + status_message[0:3])[:17] + "　　", type=discord.ActivityType.playing))
+        await asyncio.sleep(4)
+        time_count_status += 1
+        if time_count_status > 150:
+            time_count_status = 0
+            status_message = f" / 機能説明はこちら→--help / 参加サーバー数:{len(client.guilds)} / 支援はこちら→--aid"
 
 #メッセージ受信時の動作
 @client.event
@@ -49,10 +60,6 @@ async def on_message(message):
     #print(message)
     #　送信元がBotだった場合拒否
     if message.author.bot:
-        return
-    # 「/test」に対して「OK」を送信
-    if message.content == '/test':
-        await message.channel.send('OK')
         return
     
     # ====================================================================================================
@@ -88,9 +95,9 @@ async def on_message(message):
     # CCBを振る 引数も簡単であるため非常に高速な処理ができると考えられる
     # CCB<=が基本だがCCB\d+も可能で
     # ----------------------------------------------------------------------------------------------------
-    if ccb := re.findall(r'(?i)ccb<=\d+|ccb\d+|ししび\d+|しーしーびー\d+',message.content)[0]:
-        print(ccb)
-        ccb_achieve_val = int(re.findall(r'\d+',ccb)[0])
+    if ccb := re.findall(r'(?i)ccb<=\d+|ccb\d+|ししび\d+|しーしーびー\d+',message.content):
+        #print(ccb)
+        ccb_achieve_val = int(re.findall(r'\d+',ccb[0])[0])
         await message.channel.send(f"{message.content}(1d100<={ccb_achieve_val})＞ {(dice_val_cash := random.randint(1,100))}＞ {'致命的失敗/ファンブル' if dice_val_cash > 95 else '決定的成功/クリティカル' if dice_val_cash < 6 else '成功' if dice_val_cash <= ccb_achieve_val else '失敗'}")
         return
     
@@ -127,6 +134,10 @@ async def on_message(message):
         # 正直言うとここまで後ろのif文つながるならいつもと大差ないかも？
         return
     
+    # helpコマンド
+    if message.content == '--help':
+        await message.channel.send('各機能の利用方法についてはこちらを参照ください\nhttps://github.com/Mikuto0831/DiscordBot1/wiki/%E6%A9%9F%E8%83%BD%E4%B8%80%E8%A6%A7')
+        return
 
 
 client.run(const.TOKEN)
